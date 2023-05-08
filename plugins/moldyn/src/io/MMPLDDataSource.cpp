@@ -28,6 +28,8 @@ namespace megamol::moldyn::io {
 
 /*****************************************************************************/
 
+    static double loadingTime = 0;
+
 /*
  * MMPLDDataSource::Frame::Frame
  */
@@ -51,7 +53,19 @@ bool MMPLDDataSource::Frame::LoadFrame(vislib::sys::File* file, unsigned int idx
     this->frame = idx;
     this->fileVersion = version;
     this->dat.EnforceSize(static_cast<SIZE_T>(size));
-    return (file->Read(this->dat, size) == size);
+    bool result = false;
+    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+    if (file->Read(this->dat, size) == size) {
+        result = true;
+    }
+    std::chrono::high_resolution_clock::duration duration = std::chrono::high_resolution_clock::now() - start;
+    loadingTime += 1000.0 * std::chrono::duration_cast<std::chrono::duration<double>>(duration).count();
+
+    megamol::core::utility::log::Log::DefaultLog.WriteInfo("Frame %u loading speed: %f ms", idx,
+        1000.0 * std::chrono::duration_cast<std::chrono::duration<double>>(duration).count());
+
+    megamol::core::utility::log::Log::DefaultLog.WriteInfo("Total loading time: %f ms", loadingTime);
+    return result;
 }
 
 
@@ -339,6 +353,8 @@ bool MMPLDDataSource::filenameChanged(core::param::ParamSlot& slot) {
     this->bbox.Set(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f);
     this->clipbox = this->bbox;
     this->data_hash++;
+
+    loadingTime = 0;
 
     if (this->file == NULL) {
         this->file = new vislib::sys::FastFile();

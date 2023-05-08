@@ -349,11 +349,11 @@ DWORD view::AnimDataModule::loaderFunction(void* userData) {
             if ((reportTime - lastReportTime) > lastReportDistance) {
                 lastReportTime = reportTime;
                 if (accumCount > 0) {
-                    megamol::core::utility::log::Log::DefaultLog.WriteInfo("[%s] Loading speed: %f ms/f (%u)",
+                    /* megamol::core::utility::log::Log::DefaultLog.WriteInfo("[%s] Loading speed: %f ms/f (%u)",
                         fullName.PeekBuffer(),
                         1000.0 * std::chrono::duration_cast<std::chrono::duration<double>>(accumDuration).count() /
                             static_cast<double>(accumCount),
-                        static_cast<unsigned int>(accumCount));
+                        static_cast<unsigned int>(accumCount));*/
                 }
             }
 
@@ -365,11 +365,11 @@ DWORD view::AnimDataModule::loaderFunction(void* userData) {
     }
 
     if (accumCount > 0) {
-        megamol::core::utility::log::Log::DefaultLog.WriteInfo("[%s] Loading speed: %f ms/f (%u)",
+        /*megamol::core::utility::log::Log::DefaultLog.WriteInfo("[%s] Loading speed: %f ms/f (%u)",
             fullName.PeekBuffer(),
             1000.0 * std::chrono::duration_cast<std::chrono::duration<double>>(accumDuration).count() /
                 static_cast<double>(accumCount),
-            static_cast<unsigned int>(accumCount));
+            static_cast<unsigned int>(accumCount));*/
     }
 
     megamol::core::utility::log::Log::DefaultLog.WriteInfo("The loader thread is exiting.");
